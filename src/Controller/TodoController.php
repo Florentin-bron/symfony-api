@@ -32,10 +32,11 @@ class TodoController extends AbstractController
     public function index(Request $request, $jwt): Response
     {
         $data = [];
-        if($jwt != null && $this->authenticate($jwt) != null){
+        $user = $this->authenticate($jwt);
+        if($jwt != null && $user != null){
             $todos = $this->doctrine
                 ->getRepository(Todo::class)
-                ->findAll();            
+                ->findBy(['creator' => $user->getId()]);            
     
             foreach ($todos as $todo) {
                 $data[] = [
@@ -73,45 +74,45 @@ class TodoController extends AbstractController
     }
  
     /**
-     * @Route("/todo", name="project_new", methods={"POST"})
+     * @Route("/todo/{jwt}", name="project_new", methods={"POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, $jwt): Response
     {
-        $entityManager = $this->doctrine->getManager();
-        $user = new User();
-        $user->setLastname($request->request->get('lastname'));
-        $user->setFirstname($request->request->get('firstname'));
-        $user->setEmail($request->request->get('email'));
-        $user->setPassword($request->request->get('password'));
-        $user->setToken("");
-        $entityManager->persist($user);
-        $entityManager->flush();
-        $token = Token::create($user->getId(), "sec!ReT423*&", time() + 999999, "testtokenissuer");
-        $user->setToken($token);
-        $entityManager->persist($user);
-        $entityManager->flush();
- 
-        return $this->json('Created new user successfully with id ' . $user->getId() . 'with jwt:   ' . $token);
+        $user = $this->authenticate($jwt);
+        if($jwt != null && $user != null){
+            $entityManager = $this->doctrine->getManager();
+            $todo = new Todo();
+            $todo->setName($request->request->get('name'));
+            $todo->setDescription($request->request->get('description'));
+            $todo->setCreator($user);
+            $entityManager->persist($todo);
+            $entityManager->flush();
+            
+            return $this->json('Created new todo successfully with id ' . $todo->getId());
+        }
+        else{
+            return $this->json("not authenticated");
+        }
     }
  
     /**
-     * @Route("/project/{id}", name="project_show", methods={"GET"})
+     * @Route("/todo/view/{id}", name="todo_show", methods={"GET"})
      */
     public function show(int $id): Response
     {
-        $project = $this->doctrine
-            ->getRepository(Project::class)
+        $todo = $this->doctrine
+            ->getRepository(Todo::class)
             ->find($id);
  
-        if (!$project) {
+        if (!$todo) {
  
-            return $this->json('No project found for id' . $id, 404);
+            return $this->json('No todo found for id' . $id, 404);
         }
  
-        $data =  [
-            'id' => $project->getId(),
-            'name' => $project->getName(),
-            'description' => $project->getDescription(),
+        $data[] = [
+            'id' => $todo->getId(),
+            'name' => $todo->getName(),
+            'description' => $todo->getDescription(),
         ];
          
         return $this->json($data);

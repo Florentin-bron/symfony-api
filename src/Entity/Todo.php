@@ -19,6 +19,9 @@ class Todo
     #[ORM\Column(type: 'text')]
     private $description;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'todos')]
+    private $creator;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class Todo
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCreator(): ?User
+    {
+        return $this->creator;
+    }
+
+    public function setCreator(?User $creator): self
+    {
+        $this->creator = $creator;
 
         return $this;
     }

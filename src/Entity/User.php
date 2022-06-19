@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
@@ -27,6 +29,14 @@ class User
 
     #[ORM\Column(type: 'string', length: 255)]
     private $token;
+
+    #[ORM\OneToMany(mappedBy: 'creator', targetEntity: Todo::class)]
+    private $todos;
+
+    public function __construct()
+    {
+        $this->todos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -89,6 +99,36 @@ class User
     public function setToken(string $token): self
     {
         $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Todo>
+     */
+    public function getTodos(): Collection
+    {
+        return $this->todos;
+    }
+
+    public function addTodo(Todo $todo): self
+    {
+        if (!$this->todos->contains($todo)) {
+            $this->todos[] = $todo;
+            $todo->setCreator($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTodo(Todo $todo): self
+    {
+        if ($this->todos->removeElement($todo)) {
+            // set the owning side to null (unless already changed)
+            if ($todo->getCreator() === $this) {
+                $todo->setCreator(null);
+            }
+        }
 
         return $this;
     }
