@@ -194,7 +194,7 @@ class TodoController extends AbstractController
             }
 
             $sql = "INSERT INTO todo (name, description, creator_id)
-            VALUES ('".$name."', '".$description."', '".$creator."')";
+            VALUES ('".$name.", '".$description."', '".$creator."')";
 
             if (mysqli_query($conn, $sql)) {
             } else {

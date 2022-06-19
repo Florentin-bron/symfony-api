@@ -1,0 +1,324 @@
+{
+	"info": {
+		"_postman_id": "242687a0-3ba5-4eb7-8a17-4b0d8977d9a9",
+		"name": "API Todo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Add user",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "lastname",
+							"value": "Foo1",
+							"type": "default"
+						},
+						{
+							"key": "firstname",
+							"value": "Bar",
+							"type": "default"
+						},
+						{
+							"key": "email",
+							"value": "foo@bar.fr",
+							"type": "default"
+						},
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/user",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all my todo",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "test",
+							"type": "default",
+							"disabled": true
+						},
+						{
+							"key": "decription",
+							"value": "foobar",
+							"type": "default",
+							"disabled": true
+						},
+						{
+							"key": "jwt",
+							"value": "",
+							"type": "default",
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/todos/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2NTY2NjcyODcsImlzcyI6InRlc3R0b2tlbmlzc3VlciIsImlhdCI6MTY1NTY2NzI4OH0.7mrHT6OsG7a23hwFtfVMnZxpw-S6N_ySxmwcaZfHsbQ",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"todos",
+						"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2NTY2NjcyODcsImlzcyI6InRlc3R0b2tlbmlzc3VlciIsImlhdCI6MTY1NTY2NzI4OH0.7mrHT6OsG7a23hwFtfVMnZxpw-S6N_ySxmwcaZfHsbQ"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "View a todo by ID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "test",
+							"type": "default"
+						},
+						{
+							"key": "decription",
+							"value": "foobar",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/todo/view/2",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"todo",
+						"view",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a todo",
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Todo for user 2",
+							"type": "default"
+						},
+						{
+							"key": "description",
+							"value": "LORTEM IPSUM dolore",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/todo/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2NTY2NjcyODcsImlzcyI6InRlc3R0b2tlbmlzc3VlciIsImlhdCI6MTY1NTY2NzI4OH0.7mrHT6OsG7a23hwFtfVMnZxpw-S6N_ySxmwcaZfHsbQ",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"todo",
+						"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2NTY2NjcyODcsImlzcyI6InRlc3R0b2tlbmlzc3VlciIsImlhdCI6MTY1NTY2NzI4OH0.7mrHT6OsG7a23hwFtfVMnZxpw-S6N_ySxmwcaZfHsbQ"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit a todo",
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "TestEdit",
+							"type": "default"
+						},
+						{
+							"key": "description",
+							"value": "ceci est un description",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/todo/edit/5/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2NTY2NjcyODcsImlzcyI6InRlc3R0b2tlbmlzc3VlciIsImlhdCI6MTY1NTY2NzI4OH0.7mrHT6OsG7a23hwFtfVMnZxpw-S6N_ySxmwcaZfHsbQ",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"todo",
+						"edit",
+						"5",
+						"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2NTY2NjcyODcsImlzcyI6InRlc3R0b2tlbmlzc3VlciIsImlhdCI6MTY1NTY2NzI4OH0.7mrHT6OsG7a23hwFtfVMnZxpw-S6N_ySxmwcaZfHsbQ"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a todo",
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "TestEdit",
+							"type": "default"
+						},
+						{
+							"key": "description",
+							"value": "ceci est un description",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/todo/delete/7/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2NTY2NjcyODcsImlzcyI6InRlc3R0b2tlbmlzc3VlciIsImlhdCI6MTY1NTY2NzI4OH0.7mrHT6OsG7a23hwFtfVMnZxpw-S6N_ySxmwcaZfHsbQ",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"todo",
+						"delete",
+						"7",
+						"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2NTY2NjcyODcsImlzcyI6InRlc3R0b2tlbmlzc3VlciIsImlhdCI6MTY1NTY2NzI4OH0.7mrHT6OsG7a23hwFtfVMnZxpw-S6N_ySxmwcaZfHsbQ"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "injection todo",
+			"request": {
+				"auth": {
+					"type": "bearer"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "', '', 3); # INSERT INTO todo (name, description, creator_id) VALUES ('thisIsAnInjection', 'yesitis', '3'); INSERT INTO todo (name, description, creator_id)VALUES (''",
+							"type": "default"
+						},
+						{
+							"key": "description",
+							"value": "foobar",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "127.0.0.1:8000/api/manualAdd/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2NTY2NjcyODcsImlzcyI6InRlc3R0b2tlbmlzc3VlciIsImlhdCI6MTY1NTY2NzI4OH0.7mrHT6OsG7a23hwFtfVMnZxpw-S6N_ySxmwcaZfHsbQ",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"manualAdd",
+						"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE2NTY2NjcyODcsImlzcyI6InRlc3R0b2tlbmlzc3VlciIsImlhdCI6MTY1NTY2NzI4OH0.7mrHT6OsG7a23hwFtfVMnZxpw-S6N_ySxmwcaZfHsbQ"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
