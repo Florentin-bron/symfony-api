@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\Project;
 use App\Entity\Todo;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
@@ -27,7 +26,7 @@ class TodoController extends AbstractController
     }
 
     /**
-     * @Route("/todos/{jwt}", name="project_index", methods={"GET"})
+     * @Route("/todos/{jwt}", name="todo_index", methods={"GET"})
      */
     public function index(Request $request, $jwt): Response
     {
@@ -67,14 +66,14 @@ class TodoController extends AbstractController
         if (isset($userId['user_id'])){
             $userId = $userId['user_id'];
         } else {
-            return "not authenticated";
+            return null;
         }
         $user = $this->doctrine->getRepository(User::class)->findOneBy(['id' => $userId]);
         return $user;
     }
  
     /**
-     * @Route("/todo/{jwt}", name="project_new", methods={"POST"})
+     * @Route("/todo/{jwt}", name="todo_new", methods={"POST"})
      */
     public function new(Request $request, $jwt): Response
     {
@@ -119,46 +118,93 @@ class TodoController extends AbstractController
     }
  
     /**
-     * @Route("/project/{id}", name="project_edit", methods={"PUT"})
+     * @Route("/todo/edit/{id}/{jwt}", name="todo_edit", methods={"POST"})
      */
-    public function edit(Request $request, int $id): Response
+    public function edit(Request $request, int $id, $jwt): Response
     {
-        $entityManager = $this->doctrine->getManager();
-        $project = $entityManager->getRepository(Project::class)->find($id);
- 
-        if (!$project) {
-            return $this->json('No project found for id' . $id, 404);
+        $user = $this->authenticate($jwt);
+        if($jwt != null && $user != null){
+            $entityManager = $this->doctrine->getManager();
+            $todo = $entityManager->getRepository(Todo::class)->find($id);
+            
+            if (!$todo) {
+                return $this->json('No todo found for id' . $id, 404);
+            }
+        
+            $todo->setName($request->request->get('name'));
+            $todo->setDescription($request->request->get('description'));
+            $entityManager->flush();
+        
+            $data =  [
+                'id' => $todo->getId(),
+                'name' => $todo->getName(),
+                'description' => $todo->getDescription(),
+            ];
+             
+            return $this->json($data);
         }
- 
-        $project->setName($request->request->get('name'));
-        $project->setDescription($request->request->get('description'));
-        $entityManager->flush();
- 
-        $data =  [
-            'id' => $project->getId(),
-            'name' => $project->getName(),
-            'description' => $project->getDescription(),
-        ];
-         
-        return $this->json($data);
+        else{
+            return $this->json("not authenticated");
+        }
     }
  
     /**
-     * @Route("/project/{id}", name="project_delete", methods={"DELETE"})
+     * @Route("/todo/delete/{id}/{jwt}", name="todo_delete", methods={"DELETE"})
      */
-    public function delete(int $id): Response
+    public function delete(int $id, $jwt): Response
     {
-        $entityManager = $this->doctrine->getManager();
-        $project = $entityManager->getRepository(Project::class)->find($id);
- 
-        if (!$project) {
-            return $this->json('No project found for id' . $id, 404);
+        $user = $this->authenticate($jwt);
+        if($jwt != null && $user != null){
+            $entityManager = $this->doctrine->getManager();
+            $todo = $entityManager->getRepository(Todo::class)->find($id);
+            
+            if (!$todo) {
+                return $this->json('No todo found for id' . $id, 404);
+            }
+        
+            $entityManager->remove($todo);
+            $entityManager->flush();
+        
+            return $this->json('Deleted a todo successfully with id ' . $id);
         }
- 
-        $entityManager->remove($project);
-        $entityManager->flush();
- 
-        return $this->json('Deleted a project successfully with id ' . $id);
+        else{
+            return $this->json("not authenticated");
+        }
     }
 
+    
+    /**
+     * @Route("/manualAdd/{jwt}", name="manual_todo_add", methods={"POST"})
+     */
+    public function manualAddTodo(Request $request, $jwt): Response
+    {
+        $user = $this->authenticate($jwt);
+        if($jwt != null && $user != null){
+            $servername = "localhost";
+            $username = "root";
+            $dbname = "securytiapi";
+            $conn = mysqli_connect($servername, $username, null, $dbname);
+
+            $name = $request->request->get('name');
+            $description = $request->request->get('description');
+            $creator = $user->getId();
+
+            if (!$conn) {
+                die("Connection failed: " . mysqli_connect_error());
+            }
+
+            $sql = "INSERT INTO todo (name, description, creator_id)
+            VALUES ('".$name."', '".$description."', '".$creator."')";
+
+            if (mysqli_query($conn, $sql)) {
+            } else {
+                echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+            }
+            mysqli_close($conn);
+            return $this->json('Created new todo successfully');
+        }
+        else{
+            return $this->json("not authenticated");
+        }
+    }
 }

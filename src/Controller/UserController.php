@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
-use App\Entity\Project;
 use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use ReallySimpleJWT\Token;
@@ -24,21 +23,21 @@ class UserController extends AbstractController
     }
 
     /**
-     * @Route("/users", name="project_index", methods={"GET"})
+     * @Route("/users", name="user_index", methods={"GET"})
      */
     public function index(): Response
     {
-        $products = $this->doctrine
-            ->getRepository(Project::class)
+        $users = $this->doctrine
+            ->getRepository(User::class)
             ->findAll();
  
         $data = [];
  
-        foreach ($products as $product) {
+        foreach ($users as $user) {
            $data[] = [
-               'id' => $product->getId(),
-               'name' => $product->getName(),
-               'description' => $product->getDescription(),
+               'id' => $user->getId(),
+               'name' => $user->getLastame(),
+               'description' => $user->getFirstName(),
            ];
         }
  
@@ -47,7 +46,7 @@ class UserController extends AbstractController
     }
  
     /**
-     * @Route("/user", name="project_new", methods={"POST"})
+     * @Route("/user", name="user_new", methods={"POST"})
      */
     public function new(Request $request): Response
     {
@@ -67,71 +66,4 @@ class UserController extends AbstractController
  
         return $this->json('Created new user successfully with id ' . $user->getId());
     }
- 
-    /**
-     * @Route("/project/{id}", name="project_show", methods={"GET"})
-     */
-    public function show(int $id): Response
-    {
-        $project = $this->doctrine
-            ->getRepository(Project::class)
-            ->find($id);
- 
-        if (!$project) {
- 
-            return $this->json('No project found for id' . $id, 404);
-        }
- 
-        $data =  [
-            'id' => $project->getId(),
-            'name' => $project->getName(),
-            'description' => $project->getDescription(),
-        ];
-         
-        return $this->json($data);
-    }
- 
-    /**
-     * @Route("/project/{id}", name="project_edit", methods={"PUT"})
-     */
-    public function edit(Request $request, int $id): Response
-    {
-        $entityManager = $this->doctrine->getManager();
-        $project = $entityManager->getRepository(Project::class)->find($id);
- 
-        if (!$project) {
-            return $this->json('No project found for id' . $id, 404);
-        }
- 
-        $project->setName($request->request->get('name'));
-        $project->setDescription($request->request->get('description'));
-        $entityManager->flush();
- 
-        $data =  [
-            'id' => $project->getId(),
-            'name' => $project->getName(),
-            'description' => $project->getDescription(),
-        ];
-         
-        return $this->json($data);
-    }
- 
-    /**
-     * @Route("/project/{id}", name="project_delete", methods={"DELETE"})
-     */
-    public function delete(int $id): Response
-    {
-        $entityManager = $this->doctrine->getManager();
-        $project = $entityManager->getRepository(Project::class)->find($id);
- 
-        if (!$project) {
-            return $this->json('No project found for id' . $id, 404);
-        }
- 
-        $entityManager->remove($project);
-        $entityManager->flush();
- 
-        return $this->json('Deleted a project successfully with id ' . $id);
-    }
-
 }
